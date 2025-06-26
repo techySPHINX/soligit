@@ -2,8 +2,9 @@ import "@/styles/globals.css";
 import { GeistSans } from "geist/font";
 import { headers } from "next/headers";
 import { ClerkProvider } from "@clerk/nextjs";
-import { TRPCReactProvider } from "@/trpc/react";
+import { TRPCReactProvider } from "../trpc/react";
 import { Toaster } from "sonner";
+import ApplicationShell from "../components/ApplicationShell";
 
 export const metadata = {
   title: "Soligit",
@@ -22,6 +23,7 @@ export default function RootLayout({
           className={`font-sans ${GeistSans.className} grainy min-h-screen`}
         >
           <TRPCReactProvider headers={headers()}>
+            <ApplicationShell>{children}</ApplicationShell>
           </TRPCReactProvider>
           <Toaster richColors />
         </body>
