@@ -1,7 +1,5 @@
-import AddRepo from "../components/AddRepo";
-import ApplicationShell from "../components/ApplicationShell";
 import CreateProject from "../components/CreateProject";
-import { db } from "@/server/db";
+import { db } from "../server/db";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 

@@ -19,8 +19,7 @@ import { usePathname } from "next/navigation";
 import { api } from "../trpc/react";
 import { Skeleton } from "./ui/skeleton";
 import { atom, useAtom } from "jotai";
-import { Project } from "@prisma/client";
-import { useRouter } from "next/router";
+import { type Project } from "@prisma/client";
 
 const publicRoutes = ["/sign-up", "/sign-in"];
 
