@@ -25,11 +25,11 @@ export const getCommitHashes = async (
   const [owner, repo] = githubUrl.split("/").slice(3, 5);
   const { data } = await octokit.request(`GET /repos/${owner}/${repo}/commits`);
   //   need commit author, commit message, commit hash and commit time
-  const sortedCommits = data.sort(
-    (a: any, b: any) =>
-      new Date(b.commit.author.date).getTime() -
-      new Date(a.commit.author.date).getTime(),
-  ) as any[];
+  const sortedCommits = (data as any[]).sort(
+    (a, b) =>
+      new Date(b.commit?.author?.date ?? 0).getTime() -
+      new Date(a.commit?.author?.date ?? 0).getTime(),
+  );
 
   return sortedCommits.slice(0, 15).map((commit: any) => ({
     commitHash: commit.sha as string,
