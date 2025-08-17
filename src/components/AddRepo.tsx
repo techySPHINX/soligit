@@ -55,8 +55,8 @@ const AddRepo = ({ projectId }: Props) => {
             value={repoUrl}
             onChange={(e) => setRepoUrl(e.target.value)}
           />
-          <Button disabled={linkRepo.isLoading} className="mt-4">
-            {linkRepo.isLoading ? "Submitting..." : "Submit"}
+          <Button disabled={linkRepo.status === "pending"} className="mt-4">
+            {linkRepo.status === "pending" ? "Submitting..." : "Submit"}
           </Button>
         </form>
       </CardContent>

@@ -1,5 +1,4 @@
-import "@/styles/globals.css";
-import { GeistSans } from "geist/font";
+import "../styles/globals.css";
 import { headers } from "next/headers";
 import { ClerkProvider } from "@clerk/nextjs";
 import { TRPCReactProvider } from "../trpc/react";
@@ -11,18 +10,19 @@ export const metadata = {
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const headersList = await headers();
   return (
     <ClerkProvider>
       <html lang="en" className="h-full bg-white">
         <body
-          className={`font-sans ${GeistSans.className} grainy min-h-screen`}
+          className={`font-sans grainy min-h-screen`}
         >
-          <TRPCReactProvider headers={headers()}>
+          <TRPCReactProvider headers={headersList}>
             <ApplicationShell>{children}</ApplicationShell>
           </TRPCReactProvider>
           <Toaster richColors />
