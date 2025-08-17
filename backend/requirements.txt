@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+pydantic
+python-dotenv
+weaviate-client
+google-generativeai
+requests
+numpy
+langchain
+langchain-community

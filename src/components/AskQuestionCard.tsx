@@ -82,8 +82,8 @@ const AskQuestionCard = ({ projectId }: Props) => {
               value={question}
               onChange={(e) => setQuestion(e.target.value)}
             />
-            <Button disabled={askQuestion.isLoading} className="mt-4">
-              {askQuestion.isLoading ? "Thinking..." : "Ask Soligit!"}
+            <Button disabled={askQuestion.isPending} className="mt-4">
+              {askQuestion.isPending ? "Thinking..." : "Ask Soligit!"}
             </Button>
           </form>
         </CardContent>
