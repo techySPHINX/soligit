@@ -1,29 +1,121 @@
-# Create T3 App
+# Soligit
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+![Soligit Logo](public/favicon.ico)
 
-## What's next? How do I make an app with this?
+A full-stack web application built with the T3 stack, providing a platform for users to manage their Git repositories, ask questions, and interact with a community of developers.
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+## Features
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+*   **User Authentication:** Secure user authentication with Clerk.
+*   **Repository Management:** Add and manage your Git repositories.
+*   **Q&A Platform:** Ask questions and get answers from the community.
+*   **tRPC API:** End-to-end typesafe APIs with tRPC.
+*   **Prisma ORM:** Modern database access with Prisma.
+*   **Next.js:** Server-side rendering and static site generation with Next.js.
+*   **Tailwind CSS:** A utility-first CSS framework for rapid UI development.
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Drizzle](https://orm.drizzle.team)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+## Tech Stack
 
-## Learn More
+*   [Next.js](https://nextjs.org/)
+*   [React](https://reactjs.org/)
+*   [TypeScript](https://www.typescriptlang.org/)
+*   [tRPC](https://trpc.io/)
+*   [Prisma](https://www.prisma.io/)
+*   [Tailwind CSS](https://tailwindcss.com/)
+*   [Clerk](https://clerk.com/)
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+## Getting Started
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+### Prerequisites
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+*   Node.js (v18 or later)
+*   npm or yarn
+*   Docker (for running the database locally)
 
-## How do I deploy this?
+### Installation
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+1.  Clone the repository:
+
+    ```bash
+    git clone https://github.com/your-username/soligit.git
+    ```
+
+2.  Install the dependencies:
+
+    ```bash
+    npm install
+    ```
+
+3.  Set up the environment variables:
+
+    Create a `.env` file in the root of the project and add the following environment variables:
+
+    ```bash
+    # Clerk
+    NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
+    CLERK_SECRET_KEY=
+
+    # Database
+    DATABASE_URL="postgresql://user:password@localhost:5432/soligit"
+    ```
+
+4.  Start the database:
+
+    ```bash
+    docker-compose up -d
+    ```
+
+5.  Run the database migrations:
+
+    ```bash
+    npm run db:migrate
+    ```
+
+6.  Start the development server:
+
+    ```bash
+    npm run dev
+    ```
+
+## Environment Variables
+
+*   `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`: Your Clerk publishable key.
+*   `CLERK_SECRET_KEY`: Your Clerk secret key.
+*   `DATABASE_URL`: The connection string for your PostgreSQL database.
+
+## Database
+
+This project uses Prisma as the ORM and PostgreSQL as the database. The database schema is defined in the `prisma/schema.prisma` file.
+
+To run the database locally, you can use the `docker-compose.yml` file provided in the root of the project.
+
+## Available Scripts
+
+*   `npm run dev`: Starts the development server.
+*   `npm run build`: Builds the application for production.
+*   `npm run start`: Starts the production server.
+*   `npm run lint`: Lints the code.
+*   `npm run format`: Formats the code with Prettier.
+*   `npm run db:migrate`: Runs the database migrations.
+*   `npm run db:studio`: Opens the Prisma Studio.
+
+## Linting and Formatting
+
+This project uses ESLint for linting and Prettier for formatting. You can run the linter and formatter with the following commands:
+
+```bash
+npm run lint
+npm run format
+```
+
+## Deployment
+
+To deploy the application, you can use a platform like Vercel or Netlify. You will need to set up the environment variables on the deployment platform.
+
+## Contributing
+
+Contributions are welcome! Please open an issue or submit a pull request.
+
+## License
+
+This project is licensed under the MIT License.
