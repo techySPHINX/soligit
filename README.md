@@ -2,120 +2,142 @@
 
 ![Soligit Logo](public/favicon.ico)
 
-A full-stack web application built with the T3 stack, providing a platform for users to manage their Git repositories, ask questions, and interact with a community of developers.
+Soligit is a powerful open-source tool designed to streamline your development workflow. It leverages AI to automatically generate comprehensive documentation for your codebases, analyze and summarize meetings, and provide intelligent insights into your projects.
 
 ## Features
 
-*   **User Authentication:** Secure user authentication with Clerk.
-*   **Repository Management:** Add and manage your Git repositories.
-*   **Q&A Platform:** Ask questions and get answers from the community.
-*   **tRPC API:** End-to-end typesafe APIs with tRPC.
-*   **Prisma ORM:** Modern database access with Prisma.
-*   **Next.js:** Server-side rendering and static site generation with Next.js.
-*   **Tailwind CSS:** A utility-first CSS framework for rapid UI development.
+- **Automated Documentation Generation:** Provide a GitHub URL and receive a full-fledged documentation website, complete with a file tree and answers to common questions about your codebase.
+- **AI-Powered Q&A:** Ask questions about your codebase in natural language and get intelligent, context-aware answers.
+- **Commit Summarization:** Automatically summarize the changes in a specific commit, making it easier to track project history.
+- **Meeting Transcription and Analysis:** Transcribe audio meetings from a URL and use AI to summarize key points and answer questions about the discussion.
+- **Secure and Scalable:** Built with a modern, robust tech stack to ensure reliability and performance.
 
 ## Tech Stack
 
-*   [Next.js](https://nextjs.org/)
-*   [React](https://reactjs.org/)
-*   [TypeScript](https://www.typescriptlang.org/)
-*   [tRPC](https://trpc.io/)
-*   [Prisma](https://www.prisma.io/)
-*   [Tailwind CSS](https://tailwindcss.com/)
-*   [Clerk](https://clerk.com/)
+### Frontend
+
+- [Next.js](https://nextjs.org/)
+- [React](https://reactjs.org/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [tRPC](https://trpc.io/)
+- [shadcn/ui](https://ui.shadcn.com/)
+- [Clerk](https://clerk.com/) for authentication
+
+### Backend
+
+- [Python](https://www.python.org/)
+- [FastAPI](https://fastapi.tiangolo.com/)
+- [Weaviate](https://weaviate.io/) for vector search
+- [Google Gemini](https://gemini.google.com/) for generative AI
+- [AssemblyAI](https://www.assemblyai.com/) for audio transcription
 
 ## Getting Started
 
 ### Prerequisites
 
-*   Node.js (v18 or later)
-*   npm or yarn
-*   Docker (for running the database locally)
+- Node.js (v18 or later)
+- Python (v3.9 or later)
+- `pip` and `virtualenv` for Python package management
+- A PostgreSQL database
 
 ### Installation
 
-1.  Clone the repository:
+1.  **Clone the repository:**
 
     ```bash
     git clone https://github.com/your-username/soligit.git
+    cd soligit
     ```
 
-2.  Install the dependencies:
+2.  **Set up the frontend:**
 
     ```bash
     npm install
     ```
 
-3.  Set up the environment variables:
-
-    Create a `.env` file in the root of the project and add the following environment variables:
+3.  **Set up the backend:**
 
     ```bash
-    # Clerk
-    NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
-    CLERK_SECRET_KEY=
+    cd backend
+    python -m venv venv
+    source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
+    pip install -r requirements.txt
+    cd ..
+    ```
+
+4.  **Set up environment variables:**
+
+    Create a `.env.local` file in the root directory and add the following, replacing the placeholder values with your actual credentials:
+
+    ```env
+    # Clerk Authentication
+    NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
+    CLERK_SECRET_KEY=your_clerk_secret_key
 
     # Database
-    DATABASE_URL="postgresql://user:password@localhost:5432/soligit"
+    DATABASE_URL="postgresql://user:password@host:port/database"
+
+    # Weaviate
+    WEAVIATE_ENVIRONMENT=your_weaviate_environment
+    WEAVIATE_API_KEY=your_weaviate_api_key
+    WEAVIATE_INDEX=your_weaviate_index
+
+    # GitHub
+    GITHUB_PERSONAL_ACCESS_TOKEN=your_github_personal_access_token
     ```
 
-4.  Start the database:
-
-    ```bash
-    docker-compose up -d
-    ```
-
-5.  Run the database migrations:
+5.  **Run database migrations:**
 
     ```bash
     npm run db:migrate
     ```
 
-6.  Start the development server:
+### Running the Application
+
+1.  **Start the backend server:**
+
+    ```bash
+    cd backend
+    uvicorn main:app --reload
+    ```
+
+2.  **Start the frontend development server:**
+
+    In a separate terminal, from the root directory:
 
     ```bash
     npm run dev
     ```
 
-## Environment Variables
+Your application should now be running at `http://localhost:3000`.
 
-*   `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`: Your Clerk publishable key.
-*   `CLERK_SECRET_KEY`: Your Clerk secret key.
-*   `DATABASE_URL`: The connection string for your PostgreSQL database.
+## Project Structure
 
-## Database
-
-This project uses Prisma as the ORM and PostgreSQL as the database. The database schema is defined in the `prisma/schema.prisma` file.
-
-To run the database locally, you can use the `docker-compose.yml` file provided in the root of the project.
-
-## Available Scripts
-
-*   `npm run dev`: Starts the development server.
-*   `npm run build`: Builds the application for production.
-*   `npm run start`: Starts the production server.
-*   `npm run lint`: Lints the code.
-*   `npm run format`: Formats the code with Prettier.
-*   `npm run db:migrate`: Runs the database migrations.
-*   `npm run db:studio`: Opens the Prisma Studio.
-
-## Linting and Formatting
-
-This project uses ESLint for linting and Prettier for formatting. You can run the linter and formatter with the following commands:
-
-```bash
-npm run lint
-npm run format
 ```
-
-## Deployment
-
-To deploy the application, you can use a platform like Vercel or Netlify. You will need to set up the environment variables on the deployment platform.
-
-## Contributing
-
-Contributions are welcome! Please open an issue or submit a pull request.
+soligit/
+├── backend/         # Python FastAPI backend
+├── prisma/          # Prisma schema and migrations
+├── public/          # Public assets
+├── src/             # Next.js frontend application
+│   ├── app/         # App Router pages and layouts
+│   ├── components/  # React components
+│   ├── lib/         # Helper functions and utilities
+│   ├── server/      # Server-side logic (tRPC, db)
+│   └── trpc/        # tRPC configuration
+├── .env.local       # Environment variables (create this)
+├── package.json     # Frontend dependencies and scripts
+└── README.md        # This file
+```
 
 ## License
 
-This project is licensed under the MIT License.
+This project is licensed under the **Apache 2.0 License**. See the [LICENSE](LICENSE) file for details.
+
+## Contributing
+
+Contributions are welcome! Please feel free to open an issue or submit a pull request.
+
+## Security
+
+For any security-related concerns, please refer to our [Security Policy](SECURITY.md).
