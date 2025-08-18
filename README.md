@@ -1,38 +1,54 @@
-# Soligit
+<div align="center">
+  <a href="https://soligit.com">
+    <img src="public/favicon.ico" alt="Soligit Logo" width="100" height="100">
+  </a>
+  <h1 align="center">Soligit</h1>
+  <p align="center">
+    <strong>Streamline Your Development Workflow with AI</strong>
+  </p>
+  <p align="center">
+    Soligit is a powerful open-source tool that leverages AI to automatically generate comprehensive documentation for your codebases, analyze and summarize meetings, and provide intelligent insights into your projects.
+  </p>
+  <p align="center">
+    <a href="/LICENSE"><img src="https://img.shields.io/badge/License-Apache_2.0-blue.svg" alt="License"></a>
+    <a href="https://github.com/your-username/soligit/issues"><img src="https://img.shields.io/github/issues/your-username/soligit" alt="Issues"></a>
+    <a href="https://github.com/your-username/soligit/stargazers"><img src="https://img.shields.io/github/stars/your-username/soligit" alt="Stargazers"></a>
+  </p>
+</div>
 
-![Soligit Logo](public/favicon.ico)
+## ✨ Features
 
-Soligit is a powerful open-source tool designed to streamline your development workflow. It leverages AI to automatically generate comprehensive documentation for your codebases, analyze and summarize meetings, and provide intelligent insights into your projects.
+- **🤖 Automated Documentation Generation:** Provide a GitHub URL and receive a full-fledged documentation website, complete with a file tree and answers to common questions about your codebase.
+- **🧠 AI-Powered Q&A:** Ask questions about your codebase in natural language and get intelligent, context-aware answers.
+- **⏱️ Commit Summarization:** Automatically summarize the changes in a specific commit, making it easier to track project history.
+- **🎙️ Meeting Transcription and Analysis:** Transcribe audio meetings from a URL and use AI to summarize key points and answer questions about the discussion.
+- **🔒 Secure and Scalable:** Built with a modern, robust tech stack to ensure reliability and performance.
 
-## Features
-
-- **Automated Documentation Generation:** Provide a GitHub URL and receive a full-fledged documentation website, complete with a file tree and answers to common questions about your codebase.
-- **AI-Powered Q&A:** Ask questions about your codebase in natural language and get intelligent, context-aware answers.
-- **Commit Summarization:** Automatically summarize the changes in a specific commit, making it easier to track project history.
-- **Meeting Transcription and Analysis:** Transcribe audio meetings from a URL and use AI to summarize key points and answer questions about the discussion.
-- **Secure and Scalable:** Built with a modern, robust tech stack to ensure reliability and performance.
-
-## Tech Stack
+## 🚀 Tech Stack
 
 ### Frontend
 
-- [Next.js](https://nextjs.org/)
-- [React](https://reactjs.org/)
-- [TypeScript](https://www.typescriptlang.org/)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [tRPC](https://trpc.io/)
-- [shadcn/ui](https://ui.shadcn.com/)
-- [Clerk](https://clerk.com/) for authentication
+| Technology | Icon |
+| --- | --- |
+| Next.js | <img src="https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=next.js&logoColor=white" alt="Next.js"> |
+| React | <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React"> |
+| TypeScript | <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript"> |
+| Tailwind CSS | <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS"> |
+| tRPC | <img src="https://img.shields.io/badge/tRPC-2596BE?style=for-the-badge&logo=trpc&logoColor=white" alt="tRPC"> |
+| shadcn/ui | <img src="https://img.shields.io/badge/shadcn/ui-000000?style=for-the-badge&logo=shadcn&logoColor=white" alt="shadcn/ui"> |
+| Clerk | <img src="https://img.shields.io/badge/Clerk-6C47FF?style=for-the-badge&logo=clerk&logoColor=white" alt="Clerk"> |
 
 ### Backend
 
-- [Python](https://www.python.org/)
-- [FastAPI](https://fastapi.tiangolo.com/)
-- [Weaviate](https://weaviate.io/) for vector search
-- [Google Gemini](https://gemini.google.com/) for generative AI
-- [AssemblyAI](https://www.assemblyai.com/) for audio transcription
+| Technology | Icon |
+| --- | --- |
+| Python | <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python"> |
+| FastAPI | <img src="https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi&logoColor=white" alt="FastAPI"> |
+| Weaviate | <img src="https://img.shields.io/badge/Weaviate-101523?style=for-the-badge&logo=weaviate&logoColor=white" alt="Weaviate"> |
+| Google Gemini | <img src="https://img.shields.io/badge/Google_Gemini-8E44AD?style=for-the-badge&logo=google-gemini&logoColor=white" alt="Google Gemini"> |
+| AssemblyAI | <img src="https://img.shields.io/badge/AssemblyAI-FFB300?style=for-the-badge&logo=assemblyai&logoColor=white" alt="AssemblyAI"> |
 
-## Getting Started
+## 🛠️ Getting Started
 
 ### Prerequisites
 
@@ -44,20 +60,17 @@ Soligit is a powerful open-source tool designed to streamline your development w
 ### Installation
 
 1.  **Clone the repository:**
-
     ```bash
     git clone https://github.com/your-username/soligit.git
     cd soligit
     ```
 
 2.  **Set up the frontend:**
-
     ```bash
     npm install
     ```
 
 3.  **Set up the backend:**
-
     ```bash
     cd backend
     python -m venv venv
@@ -67,9 +80,7 @@ Soligit is a powerful open-source tool designed to streamline your development w
     ```
 
 4.  **Set up environment variables:**
-
     Create a `.env.local` file in the root directory and add the following, replacing the placeholder values with your actual credentials:
-
     ```env
     # Clerk Authentication
     NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
@@ -88,7 +99,6 @@ Soligit is a powerful open-source tool designed to streamline your development w
     ```
 
 5.  **Run database migrations:**
-
     ```bash
     npm run db:migrate
     ```
@@ -96,23 +106,20 @@ Soligit is a powerful open-source tool designed to streamline your development w
 ### Running the Application
 
 1.  **Start the backend server:**
-
     ```bash
     cd backend
     uvicorn main:app --reload
     ```
 
 2.  **Start the frontend development server:**
-
     In a separate terminal, from the root directory:
-
     ```bash
     npm run dev
     ```
 
 Your application should now be running at `http://localhost:3000`.
 
-## Project Structure
+## 📂 Project Structure
 
 ```
 soligit/
@@ -130,14 +137,14 @@ soligit/
 └── README.md        # This file
 ```
 
-## License
-
-This project is licensed under the **Apache 2.0 License**. See the [LICENSE](LICENSE) file for details.
-
-## Contributing
+## 🤝 Contributing
 
 Contributions are welcome! Please feel free to open an issue or submit a pull request.
 
-## Security
+## 📄 License
+
+This project is licensed under the **Apache 2.0 License**. See the [LICENSE](LICENSE) file for details.
+
+## 🔒 Security
 
 For any security-related concerns, please refer to our [Security Policy](SECURITY.md).
