@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ project_name }} Documentation</title>
+</head>
+<body>
+    <h1>{{ project_name }}</h1>
+    <ul>
+        <li><a href="#introduction">Introduction</a></li>
+        <li><a href="#getting-started">Getting Started</a></li>
+        <li><a href="#repository">Repository</a></li>
+        <li><a href="#coding-standards">Coding Standards</a></li>
+        <li><a href="#dependencies">Dependencies</a></li>
+        <li><a href="#building-and-compiling">Building and Compiling</a></li>
+        <li><a href="#testing">Testing</a></li>
+        <li><a href="#contributing">Contributing</a></li>
+        <li><a href="#issues">Issues</a></li>
+        <li><a href="#version-control">Version Control</a></li>
+        <li><a href="#ci-cd">CI/CD</a></li>
+    </ul>
+
+    <h2 id="introduction">Introduction</h2>
+    <pre>{{ documentation[0]['answer'] }}</pre>
+    <h2 id="getting-started">Getting Started</h2>
+    <pre>{{ documentation[1]['answer'] }}</pre>
+    <h2 id="repository">Repository</h2>
+    <pre>{{ documentation[2]['answer'] }}</pre>
+    <h2 id="coding-standards">Coding Standards</h2>
+    <pre>{{ documentation[3]['answer'] }}</pre>
+    <h2 id="dependencies">Dependencies</h2>
+    <pre>{{ documentation[4]['answer'] }}</pre>
+    <h2 id="building-and-compiling">Building and Compiling</h2>
+    <pre>{{ documentation[5]['answer'] }}</pre>
+    <h2 id="testing">Testing</h2>
+    <pre>{{ documentation[6]['answer'] }}</pre>
+    <h2 id="contributing">Contributing</h2>
+    <pre>{{ documentation[7]['answer'] }}</pre>
+    <h2 id="issues">Issues</h2>
+    <pre>{{ documentation[8]['answer'] }}</pre>
+    <h2 id="version-control">Version Control</h2>
+    <pre>{{ documentation[9]['answer'] }}</pre>
+    <h2 id="ci-cd">CI/CD</h2>
+    <pre>{{ documentation[10]['answer'] }}</pre>
+
+    <h2>File Tree</h2>
+    <div class="mermaid">
+        {{ mermaid_graph }}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true});</script>
+</body>
+</html>

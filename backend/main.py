@@ -1,4 +1,3 @@
-from dotenv import load_dotenv
 import os
 import asyncio
 from fastapi import FastAPI
@@ -8,14 +7,15 @@ import hashlib
 from gemini import get_summary, get_embeddings, ask, summarise_commit
 from assembly import transcribe_file, ask_meeting
 import weaviate
+from config import settings
+from documentation_generator import generate_documentation_html, generate_file_tree_graph
+from questions import QUESTIONS
 
-load_dotenv()
-
-weaviate.init(
-    api_key=os.getenv("WEAVIATE_API_KEY"),
-    environment="asia-southeast1-gcp-free",
+client = weaviate.Client(
+    url=f"https://{settings.WEAVIATE_ENVIRONMENT}.weaviate.network",
+    auth_client_secret=weaviate.AuthApiKey(api_key=settings.WEAVIATE_API_KEY),
 )
-index = weaviate.Index("chatpdf")
+index = client.schema.get(settings.WEAVIATE_INDEX)
 
 app = FastAPI()
 
@@ -33,22 +33,14 @@ def serialise_github_url(url):
     return url.replace("/", "_")
 
 
-def generate_file_tree_graph(file_tree):
-    graph = "graph TD;\n"
 
-    for item in file_tree:
-        if "/" in item:
-            parent_dir, current_dir = item.rsplit("/", 1)
-            graph += f"    {parent_dir}-->{current_dir}\n"
 
-    return graph
 
 
 @app.post("/generate_documentation")
 async def generate_documentation(body: GenerateDocumentationRequest):
     github_loader = GithubLoader()
-    loader = github_loader.load(body.github_url)
-    raw_documents = loader.load()
+    raw_documents = github_loader.load(body.github_url)
     file_tree = [i.metadata["source"] for i in raw_documents]
     mermaid_graph = generate_file_tree_graph(file_tree)
 
@@ -68,88 +60,36 @@ async def generate_documentation(body: GenerateDocumentationRequest):
         doc.metadata["embedding"] = embeddings[i]
     print("got embeddings")
 
-    upsert_response = index.upsert(
-        vectors=[
-            (
-                hashlib.md5(doc.page_content.encode()).hexdigest(),
-                doc.metadata["embedding"],
-                {
-                    "source": doc.metadata["source"],
-                    "code": doc.page_content[:10000],
-                    "summary": doc.metadata["summary"],
-                },
-            )
-            for doc in raw_documents
-        ],
+    objects_to_insert = []
+    for doc in raw_documents:
+        objects_to_insert.append({
+            "uuid": hashlib.md5(doc.page_content.encode()).hexdigest(),
+            "properties": {
+                "source": doc.metadata["source"],
+                "code": doc.page_content[:10000],
+                "summary": doc.metadata["summary"],
+            },
+            "vector": doc.metadata["embedding"]
+        })
+
+    index.data.insert_many(
+        objects_to_insert,
         namespace=serialise_github_url(body.github_url),
     )
-    questions = [
-        "What is the project about?",
-        "How can I get started with this project?",
-        "What does the project's repository contain?",
-        "Are there any coding standards or guidelines I should follow?",
-        "What dependencies, packages, APIs, or libraries does the project use? Look into the package.json file.",
-        "How can I build and compile the project?",
-        "What should I know about testing in this project?",
-        "How can I contribute to the project?",
-        "How are issues tracked in this project?",
-        "What's the version control strategy for this project?",
-        "Tell me about the project's CI/CD pipeline.",
-        "Where should I add documentation and comments in the codebase?",
-    ]
     answers = await asyncio.gather(
         *[
             ask(question, serialise_github_url(body.github_url))
-            for question in questions
+            for question in QUESTIONS
         ]
     )
-    # documentation = {}
-    # for i, question in enumerate(questions):
-    #     documentation[question] = answers[i]
     documentation = []
-    for i, question in enumerate(questions):
+    for i, question in enumerate(QUESTIONS):
         documentation.append({"question": question, "answer": answers[i]})
 
-    projectName = body.github_url.split("/")[-1]
-    documentation = f"""<h1>{projectName}</h1>
-  <ul>
-  <li><a href="#introduction">Introduction</a></li>
-  <li><a href="#getting-started">Getting Started</a></li>
-  <li><a href="#repository">Repository</a></li>
-  <li><a href="#coding-standards">Coding Standards</a></li>
-  <li><a href="#dependencies">Dependencies</a></li>
-  <li><a href="#building-and-compiling">Building and Compiling</a></li>
-  <li><a href="#testing">Testing</a></li>
-  <li><a href="#contributing">Contributing</a></li>
-  <li><a href="#issues">Issues</a></li>
-  <li><a href="#version-control">Version Control</a></li>
-  <li><a href="#ci-cd">CI/CD</a></li>
-  </ul>
+    project_name = body.github_url.split("/")[-1]
+    documentation_html = generate_documentation_html(project_name, documentation, mermaid_graph)
 
-  <h2 id="introduction">Introduction</h2>
-  <pre>{documentation[0]['answer']}</pre>
-  <h2 id="getting-started">Getting Started</h2>
-  <pre>{documentation[1]['answer']}</pre>
-  <h2 id="repository">Repository</h2>
-  <pre>{documentation[2]['answer']}</pre>
-  <h2 id="coding-standards">Coding Standards</h2>
-  <pre>{documentation[3]['answer']}</pre>
-  <h2 id="dependencies">Dependencies</h2>
-  <pre>{documentation[4]['answer']}</pre>
-  <h2 id="building-and-compiling">Building and Compiling</h2>
-  <pre>{documentation[5]['answer']}</pre>
-  <h2 id="testing">Testing</h2>
-  <pre>{documentation[6]['answer']}</pre>
-  <h2 id="contributing">Contributing</h2>
-  <pre>{documentation[7]['answer']}</pre>
-  <h2 id="issues">Issues</h2>
-  <pre>{documentation[8]['answer']}</pre>
-  <h2 id="version-control">Version Control</h2>
-  <pre>{documentation[9]['answer']}</pre>
-  <h2 id="ci-cd">CI/CD</h2>
-  <pre>{documentation[10]['answer']}</pre>"""
-
-    return {"documentation": documentation, "mermaid": mermaid_graph}
+    return {"documentation": documentation_html, "mermaid": mermaid_graph}
 
 
 @app.post("/ask")

@@ -1,7 +1,7 @@
+from config import settings
 import google.generativeai as genai
-import os
 
-genai.configure(api_key=os.environ["GEMINI_API_KEY"])
+genai.configure(api_key=settings.GEMINI_API_KEY)
 
 generation_config = {
     "temperature": 0.9,
@@ -25,9 +25,7 @@ model = genai.GenerativeModel(
 
 
 def get_summary(context, code):
-    prompt = f"Summarize the following code in the context of {context}:
-
-{code}"
+    prompt = f"Summarize the following code in the context of {context}:\n\n{code}"
     convo = model.start_chat(history=[])
     convo.send_message(prompt)
     return convo.last.text
@@ -50,9 +48,7 @@ def ask(question, context):
 
 
 def summarise_commit(diff):
-    prompt = f"Summarize the following diff:
-
-{diff}"
+    prompt = f"Summarize the following diff:\n\n{diff}"
     convo = model.start_chat(history=[])
     convo.send_message(prompt)
     return convo.last.text
