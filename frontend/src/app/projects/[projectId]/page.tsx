@@ -1,7 +1,5 @@
 import AddRepo from "../../../components/AddRepo";
-import AskQuestionCard from "../../../components/AskQuestionCard";
 import CommitLog from "../../../components/CommitLog";
-import MeetingCard from "../../../components/MeetingCard";
 import { db } from "../../../server/db";
 import {
   BookText,
@@ -17,6 +15,7 @@ import { Button } from "../../../components/ui/button";
 import InviteButton from "../../../components/InviteButton";
 import { auth } from "@clerk/nextjs/server";
 import TeamMembers from "../../../components/TeamMembers";
+import { HoverEffect } from "../../../components/ui/card-hover-effect";
 
 type Props = {
   params: {
@@ -49,6 +48,25 @@ const ProjectID = async ({ params: { projectId } }: Props) => {
   if (!project) {
     return notFound();
   }
+
+  const projectCards = [
+    {
+      title: "Ask a Question",
+      description: "Get answers to your questions about the project.",
+      link: `/qna/${project.id}`,
+    },
+    {
+      title: "Meetings",
+      description: "View and schedule meetings for the project.",
+      link: `/meetings/${project.id}`,
+    },
+    {
+      title: "Documentation",
+      description: "Read the project documentation.",
+      link: `/documentation/${project.id}`,
+    },
+  ];
+
   return (
     <>
       {!project.githubUrl && (
@@ -100,10 +118,7 @@ const ProjectID = async ({ params: { projectId } }: Props) => {
             <TeamMembers projectId={project.id} users={project.users} />
           </div>
           <div className="mt-4">
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-5">
-              <AskQuestionCard projectId={project.id} />
-              <MeetingCard project={project} />
-            </div>
+            <HoverEffect items={projectCards} />
           </div>
           <div className="mt-8">
             <CommitLog project={project} />

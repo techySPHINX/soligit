@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import type { Commit, Project } from "@prisma/client";
 import { ExternalLink, GitGraph } from "lucide-react";
 import Link from "next/link";
+import { TracingBeam } from "./ui/tracing-beam";
 
 export default function CommitLog({
   project,
@@ -41,56 +42,50 @@ export default function CommitLog({
         Poll Commits
       </Button>
       <div className="h-4"></div>
-      <ul role="list" className="space-y-6">
-        {project.commits.map((commit, commitIdx) => (
-          <li key={commit.id} className="relative flex gap-x-4">
-            <div
-              className={cn(
-                commitIdx === project.commits.length - 1 ? "h-6" : "-bottom-6",
-                "absolute left-0 top-0 flex w-6 justify-center",
-              )}
-            >
-              <div className="w-px translate-x-1 bg-gray-200" />
-            </div>
-            <>
-              <Image
-                src={commit.commitAuthorAvatar}
-                alt="" /* Consider a more descriptive alt text */
-                width={32} /* Specify appropriate width */
-                height={32} /* Specify appropriate height */
-                className="relative mt-3 h-8 w-8 flex-none rounded-full bg-gray-50"
-              />
-              <div className="flex-auto rounded-md bg-white p-3 ring-1 ring-inset ring-gray-200">
-                <div className="flex justify-between gap-x-4">
-                  <Link
-                    target="_blank"
-                    className="py-0.5 text-xs leading-5 text-gray-500"
-                    href={`${project.githubUrl}/commits/${commit.commitHash}`}
-                  >
-                    <span className="font-medium text-gray-900">
-                      {commit.commitAuthorName}
-                    </span>{" "}
-                    <span className="inline-flex items-center">
-                      committed
-                      <ExternalLink className="ml-1 h-4 w-4" />
-                    </span>
-                  </Link>
-                  <time
-                    dateTime={commit.commitDate.toString()}
-                    className="flex-none py-0.5 text-xs leading-5 text-gray-500"
-                  >
-                    {new Date(commit.commitDate).toLocaleString()}
-                  </time>
+      <TracingBeam className="px-6">
+        <div className="max-w-2xl mx-auto antialiased pt-4 relative">
+          {project.commits.map((commit, commitIdx) => (
+            <div key={commit.id} className="mb-10">
+              <div className="flex items-center gap-x-4">
+                <Image
+                  src={commit.commitAuthorAvatar}
+                  alt="" /* Consider a more descriptive alt text */
+                  width={32} /* Specify appropriate width */
+                  height={32} /* Specify appropriate height */
+                  className="relative mt-3 h-8 w-8 flex-none rounded-full bg-gray-50"
+                />
+                <div className="flex-auto rounded-md bg-white p-3 ring-1 ring-inset ring-gray-200">
+                  <div className="flex justify-between gap-x-4">
+                    <Link
+                      target="_blank"
+                      className="py-0.5 text-xs leading-5 text-gray-500"
+                      href={`${project.githubUrl}/commits/${commit.commitHash}`}
+                    >
+                      <span className="font-medium text-gray-900">
+                        {commit.commitAuthorName}
+                      </span>{" "}
+                      <span className="inline-flex items-center">
+                        committed
+                        <ExternalLink className="ml-1 h-4 w-4" />
+                      </span>
+                    </Link>
+                    <time
+                      dateTime={commit.commitDate.toString()}
+                      className="flex-none py-0.5 text-xs leading-5 text-gray-500"
+                    >
+                      {new Date(commit.commitDate).toLocaleString()}
+                    </time>
+                  </div>
+                  <span className="font-semibold">{commit.commitMessage}</span>
+                  <pre className="mt-2 whitespace-pre-wrap text-sm leading-6 text-gray-500">
+                    {commit.summary}
+                  </pre>
                 </div>
-                <span className="font-semibold">{commit.commitMessage}</span>
-                <pre className="mt-2 whitespace-pre-wrap text-sm leading-6 text-gray-500">
-                  {commit.summary}
-                </pre>
               </div>
-            </>
-          </li>
-        ))}
-      </ul>
+            </div>
+          ))}
+        </div>
+      </TracingBeam>
     </>
   );
 }

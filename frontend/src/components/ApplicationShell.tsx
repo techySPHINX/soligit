@@ -63,6 +63,12 @@ export default function ApplicationShell({
       current: false,
       icon: FolderTree,
     },
+    {
+      name: "Aceternity UI Demo",
+      href: "/aceternity-ui-demo",
+      current: false,
+      icon: Presentation,
+    },
   ];
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const pathname = usePathname();

@@ -2,6 +2,7 @@ import CreateProject from "../components/CreateProject";
 import { db } from "../server/db";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
+import { TextGenerateEffect } from "@/components/ui/text-generate-effect";
 
 export default async function Index() {
   const { userId } = await auth();
@@ -24,12 +25,10 @@ export default async function Index() {
   });
   if (projects.length === 0) {
     return (
-      <>
-        <h1 className="text-2xl font-semibold text-gray-700">
-          Begin by creating a new project!
-        </h1>
+      <div className="container mx-auto h-full flex flex-col items-center justify-center">
+        <TextGenerateEffect words="Begin by creating a new project!" />
         <CreateProject />
-      </>
+      </div>
     );
   } else {
     return redirect("/projects/" + projects[0]!.id);
