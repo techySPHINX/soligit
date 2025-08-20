@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import { cn } from "../lib/utils";
 import { Button } from "./ui/button";
 import { api } from "../trpc/react";
@@ -52,9 +53,11 @@ export default function CommitLog({
               <div className="w-px translate-x-1 bg-gray-200" />
             </div>
             <>
-              <img
+              <Image
                 src={commit.commitAuthorAvatar}
-                alt=""
+                alt="" /* Consider a more descriptive alt text */
+                width={32} /* Specify appropriate width */
+                height={32} /* Specify appropriate height */
                 className="relative mt-3 h-8 w-8 flex-none rounded-full bg-gray-50"
               />
               <div className="flex-auto rounded-md bg-white p-3 ring-1 ring-inset ring-gray-200">

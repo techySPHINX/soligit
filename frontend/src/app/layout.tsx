@@ -4,6 +4,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { TRPCReactProvider } from "../trpc/react";
 import { Toaster } from "sonner";
 import ApplicationShell from "../components/ApplicationShell";
+import ErrorBoundary from "../components/ErrorBoundary";
 
 export const metadata = {
   title: "Soligit",
@@ -23,7 +24,9 @@ export default async function RootLayout({
           className={`font-sans grainy min-h-screen`}
         >
           <TRPCReactProvider headers={headersList}>
-            <ApplicationShell>{children}</ApplicationShell>
+            <ErrorBoundary>
+              <ApplicationShell>{children}</ApplicationShell>
+            </ErrorBoundary>
           </TRPCReactProvider>
           <Toaster richColors />
         </body>

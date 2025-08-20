@@ -58,6 +58,7 @@ pydantic_core==2.33.2
 pyparsing==3.2.3
 python-dotenv==1.1.1
 PyYAML==6.0.2
+pytest==8.4.1
 requests==2.32.4
 requests-toolbelt==1.0.0
 rsa==4.9.1

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import type { User } from "@prisma/client";
 import React from "react";
 import { api } from "../trpc/server";
@@ -15,11 +16,13 @@ const TeamMembers = async ({ projectId, users }: Props) => {
     <>
       <div className="flex -space-x-2 overflow-hidden">
         {users.map((user, index) => (
-          <img
+          <Image
             key={user.id}
             className="inline-block h-8 w-8 rounded-full ring-2 ring-white"
             src={avatars[index]}
             alt="user profile"
+            width={32}
+            height={32}
           />
         ))}
       </div>
