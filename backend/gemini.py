@@ -1,5 +1,6 @@
 from config import settings
 import google.generativeai as genai
+from main import client, settings
 
 genai.configure(api_key=settings.GEMINI_API_KEY)
 
@@ -18,14 +19,25 @@ safety_settings = [
 ]
 
 model = genai.GenerativeModel(
-    model_name="gemini-1.0-pro",
+    model_name="gemini-1.5-pro-latest",
     generation_config=generation_config,
     safety_settings=safety_settings,
 )
 
 
 def get_summary(context, code):
-    prompt = f"Summarize the following code in the context of {context}:\n\n{code}"
+    prompt = f"""
+Please provide a concise and informative summary of the following code from the file '{context}'.
+Your summary should be understandable to a developer who is new to the project.
+
+Your summary should include:
+- A high-level overview of the code's purpose and functionality.
+- A description of the key functions, classes, and their roles.
+- Any important dependencies or external libraries used in the code.
+
+Here is the code:
+{code}
+"""
     convo = model.start_chat(history=[])
     convo.send_message(prompt)
     return convo.last.text
@@ -40,11 +52,40 @@ def get_embeddings(text):
     return result["embedding"]
 
 
-def ask(question, context):
-    prompt = f"In the context of {context}, answer the following question: {question}"
+def retrieve_documents(question, context):
+    response = client.query.hybrid(
+        query=question,
+        alpha=0.7,  # Give more weight to vector search
+        namespace=context,
+        properties=["source", "code", "summary"],
+        limit=10
+    )
+    return response['data']['Get'][settings.WEAVIATE_INDEX]
+
+def generate_answer(question, context, documents):
+    prompt = f"""
+You are a helpful AI assistant that answers questions about a GitHub repository.
+You will be given a question and a set of documents retrieved from the repository.
+Your task is to answer the question based on the provided documents.
+
+Here is the question:
+{question}
+
+Here are the relevant documents:
+{documents}
+
+Please provide a comprehensive answer to the question based on the documents.
+You should cite the sources of your answer by referencing the file paths of the documents.
+If the documents don't contain enough information to answer the question, please state that you couldn't find an answer in the provided documents.
+"""
     convo = model.start_chat(history=[])
     convo.send_message(prompt)
     return convo.last.text
+
+def ask(question, context):
+    documents = retrieve_documents(question, context)
+    answer = generate_answer(question, context, documents)
+    return answer
 
 
 def summarise_commit(diff):

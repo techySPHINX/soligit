@@ -134,6 +134,9 @@ async def generate_documentation(body: GenerateDocumentationRequest):
     return {"documentation": documentation_html, "mermaid": mermaid_graph}
 
 
+
+
+
 @app.post("/ask")
 async def query(body: AskRequest):
     try:
