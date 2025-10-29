@@ -1,3 +1,4 @@
 
-cd frontend && npm test
-cd frontend && npm test
+if [ -d "frontend" ]; then
+	cd frontend && npm test
+fi

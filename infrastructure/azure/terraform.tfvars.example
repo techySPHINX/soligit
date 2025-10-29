@@ -1,0 +1,11 @@
+# Example terraform variables file
+# Copy this file to terraform.tfvars and fill in your values
+
+resource_group_name = "soligit-rg"
+location            = "eastus"
+vm_name             = "soligit-backend-vm"
+vm_size             = "Standard_B2s"
+admin_username      = "azureuser"
+admin_password      = "YourSecurePassword123!"  # Change this to a secure password
+environment         = "production"
+project_name        = "soligit"

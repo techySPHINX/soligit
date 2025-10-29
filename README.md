@@ -48,7 +48,30 @@
 | Google Gemini | <img src="https://img.shields.io/badge/Google_Gemini-8E44AD?style=for-the-badge&logo=google-gemini&logoColor=white" alt="Google Gemini"> |
 | AssemblyAI | <img src="https://img.shields.io/badge/AssemblyAI-FFB300?style=for-the-badge&logo=assemblyai&logoColor=white" alt="AssemblyAI"> |
 
-## 🛠️ Getting Started
+## 🏗️ Production-Grade Infrastructure
+
+Soligit is designed for robust, scalable, and secure deployments. Our recommended production setup uses **Azure Cloud** with:
+
+- Automated VM provisioning using **Terraform**
+- Secure networking (NSG firewall rules)
+- Nginx reverse proxy for HTTPS and load balancing
+- Supervisor for backend process management
+- Automated deployment scripts
+- Environment variable management for secrets
+- Logging and monitoring best practices
+
+See [`infrastructure/azure/README.md`](infrastructure/azure/README.md) for full instructions and architecture details.
+
+### Key Features
+- **Scalable VM** with Ubuntu 22.04
+- **Nginx** reverse proxy for production
+- **Supervisor** for process management
+- **Auto-deployment** from GitHub
+- **Firewall** (SSH, HTTP, HTTPS, FastAPI)
+- **Cost-effective** (~$35-50/month)
+- **Security best practices** (no secrets in git, HTTPS, regular updates)
+
+---
 
 ### Prerequisites
 
@@ -57,7 +80,7 @@
 - `pip` and `virtualenv` for Python package management
 - A PostgreSQL database
 
-### Installation
+## 🛠️ Getting Started
 
 1.  **Clone the repository:**
     ```bash
@@ -121,6 +144,16 @@ Your application should now be running at `http://localhost:3000`.
 
 ## 📂 Project Structure
 
+### Infrastructure
+
+```
+infrastructure/
+  azure/           # Terraform files for Azure VM, networking, security, cloud-init
+  scripts/         # Bash scripts for deployment and destruction
+```
+
+See [`infrastructure/azure/README.md`](infrastructure/azure/README.md) for full cloud deployment instructions.
+
 ```
 soligit/
 ├── backend/         # Python FastAPI backend
@@ -137,6 +170,15 @@ soligit/
 └── README.md        # This file
 ```
 
+## 🏆 Quality & Security
+
+- **Infrastructure as Code:** All cloud resources are managed via Terraform for reproducibility and auditability.
+- **Secrets Management:** `.env` files are never committed; sensitive data is managed securely.
+- **Automated Deployment:** VM setup and app deployment are fully automated for reliability.
+- **Logging & Monitoring:** Nginx and Supervisor logs are available for troubleshooting and monitoring.
+- **Cost & Performance:** Default VM size is cost-effective for most use cases; easily upgradable.
+- **Security:** NSG rules, HTTPS, and regular updates recommended.
+
 ## 🤝 Contributing
 
 Contributions are welcome! Please feel free to open an issue or submit a pull request.
@@ -146,5 +188,7 @@ Contributions are welcome! Please feel free to open an issue or submit a pull re
 This project is licensed under the **Apache 2.0 License**. See the [LICENSE](LICENSE) file for details.
 
 ## 🔒 Security
+
+For production deployment, see [`infrastructure/azure/README.md`](infrastructure/azure/README.md) for security best practices, cost estimation, and troubleshooting tips.
 
 For any security-related concerns, please refer to our [Security Policy](SECURITY.md).

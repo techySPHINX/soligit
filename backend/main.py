@@ -10,6 +10,7 @@ from gemini import get_summary, get_embeddings, ask, summarise_commit
 from assembly import transcribe_file, ask_meeting
 import weaviate
 from config import settings
+from weaviate.auth import AuthApiKey
 from documentation_generator import generate_documentation_html, generate_file_tree_graph
 from questions import QUESTIONS
 from typing import Any
@@ -19,10 +20,15 @@ logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-client = weaviate.Client(
-    url=f"https://{settings.WEAVIATE_ENVIRONMENT}.weaviate.network",
-    auth_client_secret=weaviate.AuthApiKey(api_key=settings.WEAVIATE_API_KEY)
-)
+try:
+    client = weaviate.Client(
+        url=f"https://{settings.WEAVIATE_ENVIRONMENT}.weaviate.network",
+        auth_client_secret=AuthApiKey(api_key=settings.WEAVIATE_API_KEY)
+    )
+except AttributeError as e:
+    logger.error(
+        "Missing WEAVIATE_ENVIRONMENT or WEAVIATE_API_KEY in settings: %s", e)
+    raise
 
 app = FastAPI()
 
@@ -88,7 +94,6 @@ async def generate_documentation(body: GenerateDocumentationRequest):
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to generate embeddings: {e}"
         )
-        
 
     objects_to_insert = []
     for doc in raw_documents:
