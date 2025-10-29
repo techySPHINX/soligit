@@ -16,14 +16,23 @@ const TeamMembers = async ({ projectId, users }: Props) => {
     <>
       <div className="flex -space-x-2 overflow-hidden">
         {users.map((user, index) => (
-          <Image
-            key={user.id}
-            className="inline-block h-8 w-8 rounded-full ring-2 ring-white"
-            src={avatars[index]}
-            alt="user profile"
-            width={32}
-            height={32}
-          />
+          avatars[index] ? (
+            <Image
+              key={user.id}
+              className="inline-block h-8 w-8 rounded-full ring-2 ring-white"
+              src={avatars[index]}
+              alt="user profile"
+              width={32}
+              height={32}
+            />
+          ) : (
+            <div
+              key={user.id}
+              className="inline-block h-8 w-8 rounded-full ring-2 ring-white bg-gray-200 items-center justify-center text-xs text-gray-600"
+            >
+              {user.name?.charAt(0).toUpperCase() ?? "?"}
+            </div>
+          )
         ))}
       </div>
     </>

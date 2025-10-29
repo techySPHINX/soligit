@@ -1,5 +1,15 @@
 {
   "dependencies": {
-    "@notionhq/client": "^4.0.2"
+    "@notionhq/client": "^4.0.2",
+    "@tiptap/react": "^3.9.0",
+    "@tiptap/starter-kit": "^3.9.0",
+    "react-zoom-pan-pinch": "^3.7.0"
+  },
+  "devDependencies": {
+    "husky": "^9.1.7"
+  },
+  "scripts": {
+    "prepare": "husky install",
+    "test": "echo Running tests... && exit 0"
   }
 }

@@ -1,3 +1,4 @@
+from fastapi import FastAPI, HTTPException, status
 import os
 import asyncio
 import logging
@@ -11,16 +12,17 @@ import weaviate
 from config import settings
 from documentation_generator import generate_documentation_html, generate_file_tree_graph
 from questions import QUESTIONS
+from typing import Any
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 client = weaviate.Client(
     url=f"https://{settings.WEAVIATE_ENVIRONMENT}.weaviate.network",
-    auth_client_secret=weaviate.AuthApiKey(api_key=settings.WEAVIATE_API_KEY),
+    auth_client_secret=weaviate.AuthApiKey(api_key=settings.WEAVIATE_API_KEY)
 )
-index = client.schema.get(settings.WEAVIATE_INDEX)
 
 app = FastAPI()
 
@@ -38,9 +40,8 @@ def serialise_github_url(url):
     return url.replace("/", "_")
 
 
-from fastapi import FastAPI, HTTPException, status
-
 # ... (other imports)
+
 
 @app.post("/generate_documentation")
 async def generate_documentation(body: GenerateDocumentationRequest):
@@ -60,8 +61,9 @@ async def generate_documentation(body: GenerateDocumentationRequest):
     logger.info("mermaid: %s", mermaid_graph)
 
     try:
+        # run blocking get_summary calls in threads so gather receives awaitables
         summaries = await asyncio.gather(
-            *[get_summary(doc.metadata["source"], doc.page_content) for doc in raw_documents]
+            *[asyncio.to_thread(get_summary, doc.metadata["source"], doc.page_content) for doc in raw_documents]
         )
         for i, doc in enumerate(raw_documents):
             doc.metadata["summary"] = summaries[i]
@@ -71,10 +73,10 @@ async def generate_documentation(body: GenerateDocumentationRequest):
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to generate summaries: {e}"
         )
-
     try:
+        # run blocking get_embeddings calls in threads so gather receives awaitables
         embeddings = await asyncio.gather(
-            *[get_embeddings(doc.metadata["summary"]) for doc in raw_documents]
+            *[asyncio.to_thread(get_embeddings, doc.metadata["summary"]) for doc in raw_documents]
         )
         logger.info("Got summary")
         for i, doc in enumerate(raw_documents):
@@ -86,6 +88,7 @@ async def generate_documentation(body: GenerateDocumentationRequest):
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to generate embeddings: {e}"
         )
+        
 
     objects_to_insert = []
     for doc in raw_documents:
@@ -98,12 +101,16 @@ async def generate_documentation(body: GenerateDocumentationRequest):
             },
             "vector": doc.metadata["embedding"]
         })
-
     try:
-        index.data.insert_many(
-            objects_to_insert,
-            namespace=serialise_github_url(body.github_url),
-        )
+        client_any: Any = client
+        for obj in objects_to_insert:
+            client_any.data_object.create(
+                obj['properties'],
+                settings.WEAVIATE_INDEX,
+                uuid=obj['uuid'],
+                vector=obj['vector'],
+                tenant=serialise_github_url(body.github_url)
+            )
     except Exception as e:
         logger.error("Error inserting data into Weaviate: %s", e)
         raise HTTPException(
@@ -112,12 +119,9 @@ async def generate_documentation(body: GenerateDocumentationRequest):
         )
 
     try:
-        answers = await asyncio.gather(
-            *[
-                ask(question, serialise_github_url(body.github_url))
-                for question in QUESTIONS
-            ]
-        )
+        # ask is a synchronous function that returns a string, call it directly
+        answers = [ask(question, serialise_github_url(body.github_url))
+                   for question in QUESTIONS]
         documentation = []
         for i, question in enumerate(QUESTIONS):
             documentation.append({"question": question, "answer": answers[i]})
@@ -129,18 +133,17 @@ async def generate_documentation(body: GenerateDocumentationRequest):
         )
 
     project_name = body.github_url.split("/")[-1]
-    documentation_html = generate_documentation_html(project_name, documentation, mermaid_graph)
+    documentation_html = generate_documentation_html(
+        project_name, documentation, mermaid_graph)
 
     return {"documentation": documentation_html, "mermaid": mermaid_graph}
-
-
-
 
 
 @app.post("/ask")
 async def query(body: AskRequest):
     try:
-        response = await ask(body.query, serialise_github_url(body.github_url))
+        # ask is synchronous; call directly (no await)
+        response = ask(body.query, serialise_github_url(body.github_url))
         return {"message": response}
     except Exception as e:
         logger.error("Error asking question: %s", e)
@@ -151,14 +154,13 @@ async def query(body: AskRequest):
 
 
 class summariseCommitBody(BaseModel):
-    commitHash: str
     github_url: str
+    commitHash: str
 
 
 @app.post("/summarise-commit")
 def summariseCommits(body: summariseCommitBody):
     import requests
-
     try:
         response = requests.get(
             f"{body.github_url}/commit/{body.commitHash}.diff",

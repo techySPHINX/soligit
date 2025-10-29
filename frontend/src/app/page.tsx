@@ -2,7 +2,7 @@ import CreateProject from "../components/CreateProject";
 import { db } from "../server/db";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import { TextGenerateEffect } from "@/components/ui/text-generate-effect";
+import { TextGenerateEffect } from "../components/ui/text-generate-effect";
 
 export default async function Index() {
   const { userId } = await auth();
